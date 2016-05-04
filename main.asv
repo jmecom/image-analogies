@@ -1,0 +1,7 @@
+% Read images
+A = imread('images/newflower-src.jpg');
+A_prime = imread('images/newflower-blur.jpg');
+B = imread('toy-newshore-src.jpg');
+
+[B_height, B_width, ~] =
+B_prime = zeros(
