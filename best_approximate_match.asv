@@ -20,24 +20,28 @@ query_pnt = query_pnt';
 
 % This returns the index into A_features that gives the best
 % neighborhood for the given query_pnt. 
-[idx, ~] = ksearch(anno, query_pnt, 1, 1.0);
+[idx, dst] = ksearch(anno, query_pnt, 1, 1.0);
 
-% % Test: use brute force just to sanity-check ANN
-% for ii=1:length(A_features{l})
-% %   size(A_features{l}(:,ii))
-% %   size(query_pnt(:))
-%   dist = sum((A_features{l}(:,ii) - query_pnt(:)).^2);
-%   if dist < min_so_far
-%     min_idx = ii;
-%     min_so_far = dist;
-%   end
-% end
+query_pnt
+idx
+dst
+
+A = A_pyramid{l};
+[A_h, A_w, ~] = size(A_pyramid{l});
+
+min_so_far = inf;
+min_pix = 
+for ii = 1:A_h
+  for jj = A_w
+    p = A(i,j,1);
+  end
+end
 
 % Now we need to find the (i,j)'th pixel that this neighborhood 
 % corresponds with. Due to stupid indexing, we have to do some
 % flipping of heights and widths here.
 [A_h, A_w, ~] = size(A_pyramid{l});
-[best_app_i, best_app_j] = ind2sub([A_h, A_w], idx); % flip???
+[best_app_j, best_app_i] = ind2sub([A_w, A_h], idx); % flip???
 
 % Free memory
 anno = close(anno);

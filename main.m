@@ -9,27 +9,37 @@ global B;
 % Neightborhood size and num features
 N_BIG = 5;
 N_SMALL = 3;
-NUM_FEATURES = 3;
+NUM_FEATURES = 1;
 NNF = N_BIG * N_BIG * NUM_FEATURES;
 nnf = N_SMALL * N_SMALL * NUM_FEATURES;
 
 % Read images
 
-% Blur
-% A = double(imread('images/newflower-src.jpg'));
-% A_prime = double(imread('images/newflower-blur.jpg'));
-% B = double(imread('toy-newshore-src.jpg'));
+%% Blur
+A = imread('images/newflower-src.jpg');
+A_prime = imread('images/newflower-blur.jpg');
+B = imread('toy-newshore-src.jpg');
 
-A = double(imread('images/rose-src.jpg'));
-A_prime = double(imread('images/rose-emboss.jpg'));
-B = double(imread('dandilion-src.jpg'));
+%% Blur2
+% A = imread('images/blurA1.jpg');
+% A_prime = imread('images/blurA2.jpg');
+% B = imread('images/blurB1.jpg');
+
+%% Identity Test
+% A = imread('images/IdentityA.jpg');
+% A_prime = imread('images/IdentityA.jpg');
+% B = imread('IdentityB.jpg');
+
+% %% Emboss Test
+% A = imread('images/rose-src.jpg');
+% A_prime = imread('images/rose-emboss.jpg');
+% B = imread('dandilion-src.jpg');
 
 % TODO: Remove this -- it's just faster for testing.
-shrink_factor = 0.1;
+shrink_factor = 0.2;
 A = imresize(A, shrink_factor);
 A_prime = imresize(A_prime, shrink_factor);
 B = imresize(B, shrink_factor);
 
 % Make image analogy
-% imshow(uint8(B));
 B_prime = create_image_analogy(A, A_prime, B);
