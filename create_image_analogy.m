@@ -2,9 +2,8 @@ function [ B_prime ] = create_image_analogy( A, A_prime, B )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
-% Neightborhood size
-N = 5;
-n = 3;
+global N_BIG;
+global NNF;
 
 [B_height, B_width, ~] = size(B);
 [A_height, A_width, ~] = size(A);
@@ -13,119 +12,107 @@ n = 3;
 A_pyramid = {A};
 A_prime_pyramid = {A_prime};
 B_pyramid = {B};
+B_prime_pyramid = {zeros(size(B))};
+s_pyramid = {zeros(B_height, B_width, 2)};
 
 while (A_height >= 50) && (A_width >= 50)
   A_pyramid{end+1} = impyramid(A_pyramid{end}, 'reduce');
   A_prime_pyramid{end+1} = impyramid(A_prime_pyramid{end}, 'reduce');
   B_pyramid{end+1} = impyramid(B_pyramid{end}, 'reduce');
+  B_prime_pyramid{end+1} = impyramid(B_prime_pyramid{end}, 'reduce');
+  s_pyramid{end+1} = impyramid(s_pyramid{end}, 'reduce');
   
   [A_height, A_width, ~] = size(A_pyramid{end});
 end
 
 L = size(A_pyramid, 2);
 
-%% Compute features ?
-% ...
+%% Compute features
+% TODO: Make luminance maps.
 
-% Number of features
-F = 3;
-
-% Initialize the search structures
-s = zeros(B_height, B_width);
-
-%% Feature vectors for ANN
+%% Make feature vectors used for ANN
 % Extend border for each level to catch edge cases
-A_pyramid_border = {};
-A_prime_pyramid_border = {};
-B_pyramid_border = {};
+A_pyramid_extend = cell(L);
+A_prime_pyramid_extend = cell(L);
+B_pyramid_extend = cell(L);
+B_prime_pyramid_extend = cell(L);
 for i=1:L
-  A_pyramid_border{i} = extend_image(A_pyramid{i}, N/2);
-  A_prime_pyramid_border{i} = extend_image(A_prime_pyramid{i}, N/2);
-  B_pyramid_border{i} = extend_image(B_pyramid{i}, N/2);
+  A_pyramid_extend{i} = extend_image(A_pyramid{i}, N_BIG/2);
+  A_prime_pyramid_extend{i} = extend_image(A_prime_pyramid{i}, N_BIG/2);
+  B_pyramid_extend{i} = extend_image(B_pyramid{i}, N_BIG/2);
+  B_prime_pyramid_extend{i} = extend_image(B_prime_pyramid{i}, N_BIG/2);
 end
 
-% Show image
-% for i=1:L
-%   subplot(1,L,i);
-%   imshow(uint8(A_prime_pyramid_border{i}));
-% end
-
-% Make feature vector for ANN
 % Concat neightborhood of each pixel at every level
-A_features = {};
-B_features = {}; zeros(B_height, B_width, N * N * F);
-border = floor(N/2);
-
-%% Test
-border = floor(N/2);
+A_features = cell(L);
+B_features = cell(L);
 
 for l = 1:L
-  A_l = A_pyramid_border{l};
-  B_l = B_pyramid_border{l};
-
-  % init features of A from size of
+  A_l = A_pyramid_extend{l};
+  B_l = B_pyramid_extend{l};
+  
   [A_height, A_width, ~] = size(A_pyramid{l});
   [B_height, B_width, ~] = size(B_pyramid{l});
   
-  A_features{l} = zeros(A_height * A_width, N * N * F);
-  B_features{l} = zeros(B_height * B_width, N * N * F);
-
+  A_features{l} = zeros(A_height * A_width, NNF);
+  B_features{l} = zeros(B_height * B_width, NNF);
+  
   for i = 1:A_height
     for j = 1:A_width
-      A_features{l}(sub2ind([A_height A_width], i, j), :) = reshape( ...
-        A_l(i:i+4, j:j+4, :), ...
-        1, N * N *F);
+      A_features{l}(sub2ind([A_height A_width], i, j), :) = ...
+        reshape(A_l(i:i+N_BIG-1, j:j+N_BIG-1, :), 1, NNF);
     end
   end
-
+  
   for i = 1:B_height
     for j = 1:B_width
-      B_features{l}(sub2ind([B_height B_width], i, j), :) = reshape( ...
-        B_l(i:i+4, j:j+4, :), ...
-        1, N * N *F);
+      B_features{l}(sub2ind([B_height B_width], i, j), :) = ...
+        reshape(B_l(i:i+N_BIG-1, j:j+N_BIG-1, :), 1, NNF);
     end
   end
+  
 end
 
-% % Test: Show the neighborhoods
+% % Test: Show the neighborhoods to confirm this works.
 % [A_height, A_width, ~] = size(A_pyramid{l});
 % for i = 1:length(A_features{1})
 %     subplot(1,2,1);
 %     imshow(uint8(reshape(A_features{1}(i,:),5,5,3)), 'InitialMagnification','fit');
 %     subplot(1,2,2);
 %     [ii, jj] = ind2sub(size(A_pyramid_border{1}), i);
-%     imshow(uint8(A_pyramid_border{1}(ii:ii+4, jj:jj+4, :)), 'InitialMagnification','fit');  
+%     imshow(uint8(A_pyramid_border{1}(ii:ii+4, jj:jj+4, :)), 'InitialMagnification','fit');
 % end
 
-% for l = 1:L
-%   A_l = A_pyramid_border{l};
-%   B_l = B_pyramid_border{l};
-%   
-%   [A_height, A_width, ~] = size(A_pyramid{l});
-%   [B_height, B_width, ~] = size(B_pyramid{l});
-%   A_features{l} = zeros(A_height, A_width, N * N * F);
-%   B_features{l} = zeros(B_height, B_width, N * N * F);
-%   
-%   for i = border:-1:-border
-%     for j = border:-1:-border
-%       A_shift = circshift(A_l, [i j]);
-%       B_shift = circshift(B_l, [i j]);
-%       
-%       start = F * (i + 2) * (j + 2) + 1;
-%       fin = ((i + 2) * (j + 2) + 1) * F;
-%       
-%       A_features{l}(:,:,start:fin) = ...
-%         A_shift(border+1:end-border, border+1:end-border, :);
-%       B_features{l}(:,:,start:fin) = ...
-%         B_shift(border+1:end-border, border+1:end-border, :);
-%     end
-%   end
-%   
-%   A_features{l} = reshape(A_features{l}, A_height*A_width, N*N*F);
-%   B_features{l} = reshape(B_features{l}, B_height*B_width, N*N*F);
-% end
+fprintf('Finding best match...\n\n');
 
+%% Main loop, find the best match
+L=1; % Temporary!!!!!!!!!!!! FIXME
+for l = 1:L
+  fprintf('l: %d\n ======= \n', l);
+  % Loop over B'
+  B_prime_l = B_prime_pyramid{l};
+  [height, width, ~] = size(B_prime_l);
+  for i = 1:height
+    fprintf('i: %d\n', i);
+    for j = 1:width
+      % Find the best match
+      [best_i, best_j] = best_match(A_pyramid_extend, ...
+        A_prime_pyramid_extend, B_pyramid_extend, ...
+        B_prime_pyramid_extend, s_pyramid, A_features, B_features, l, i, j);
+      
+      % Save it into s
+      s_pyramid{l}(i,j,:) = [best_i best_j];
+      
+      % Write to B'
+      % TODO: This is wrong, as we're just lifting pixels from A' into
+      % B... which isn't quite right.
+      B_prime_pyramid{l}(i,j,:) = A_prime_pyramid{l}(best_i,best_j,:);
+    end
+  end
+end
 
-B_prime = 0;
+B_prime = B_prime_pyramid{1};
+% imshow(uint8(A_prime_pyramid{1}));
+imshow(uint8(B_prime));
 end
 
