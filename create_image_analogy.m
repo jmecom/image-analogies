@@ -86,7 +86,11 @@ end
 fprintf('Finding best match...\n\n');
 
 %% Main loop, find the best match
-L=1; % Temporary!!!!!!!!!!!! FIXME
+
+% TODO: doing single scale for quicker testin right now -- remove this
+% line.
+L=1; 
+
 for l = 1:L
   fprintf('l: %d\n ======= \n', l);
   % Loop over B'

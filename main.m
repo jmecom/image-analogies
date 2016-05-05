@@ -18,6 +18,7 @@ A = double(imread('images/newflower-src.jpg'));
 A_prime = double(imread('images/newflower-blur.jpg'));
 B = double(imread('toy-newshore-src.jpg'));
 
+% TODO: Remove this -- it's just faster for testing.
 A = imresize(A, 0.1);
 A_prime = imresize(A_prime, 0.1);
 B = imresize(B, 0.1);
