@@ -27,12 +27,10 @@ end
 
 L = size(A_pyramid, 2);
 
-%% Compute features ?
-% ...
+%% Compute features
+% TODO: Make luminance maps.
 
-% F = ???
-
-%% Feature vectors for ANN
+%% Make feature vectors used for ANN
 % Extend border for each level to catch edge cases
 A_pyramid_extend = cell(L);
 A_prime_pyramid_extend = cell(L);
@@ -45,13 +43,6 @@ for i=1:L
   B_prime_pyramid_extend{i} = extend_image(B_prime_pyramid{i}, N_BIG/2);
 end
 
-% Show image
-% for i=1:L
-%   subplot(1,L,i);
-%   imshow(uint8(A_prime_pyramid_border{i}));
-% end
-
-% Make feature vector for ANN
 % Concat neightborhood of each pixel at every level
 A_features = cell(L);
 B_features = cell(L);
@@ -82,7 +73,7 @@ for l = 1:L
   
 end
 
-% % Test: Show the neighborhoods
+% % Test: Show the neighborhoods to confirm this works.
 % [A_height, A_width, ~] = size(A_pyramid{l});
 % for i = 1:length(A_features{1})
 %     subplot(1,2,1);
@@ -92,36 +83,43 @@ end
 %     imshow(uint8(A_pyramid_border{1}(ii:ii+4, jj:jj+4, :)), 'InitialMagnification','fit');
 % end
 
-fprintf('Finding best match...\n');
+fprintf('Finding best match...\n\n');
 
-% Main loop, find the best match
-L=1; % Temporary!!!!!!!!!!!! FIXME
+%% Main loop, find the best match
+
+% TODO: doing single scale for quicker testin right now -- remove this
+% line.
+L=1; 
+
 for l = 1:L
-  fprintf('l: %d\n', l);
+  fprintf('l: %d/%d\n===========\n', l, L);
   % Loop over B'
   B_prime_l = B_prime_pyramid{l};
   [height, width, ~] = size(B_prime_l);
   for i = 1:height
-    fprintf('i: %d\n', i);
+    fprintf('i: %d/%D\n', i, height);
     for j = 1:width
       % Find the best match
       [best_i, best_j] = best_match(A_pyramid_extend, ...
         A_prime_pyramid_extend, B_pyramid_extend, ...
         B_prime_pyramid_extend, s_pyramid, A_features, B_features, l, i, j);
+      
       % Save it into s
       s_pyramid{l}(i,j,:) = [best_i best_j];
+      
       % Write to B'
-      %       best_i
-      %       best_j
-      %       size(B_prime_l(i,j,:))
-      A_prime_pyramid{l}(best_i,best_j,:)
-      B_prime_l(i,j,:) = A_prime_pyramid{l}(best_i,best_j,:);
+      % TODO: This is wrong, as we're just lifting pixels from A' into
+      % B... which isn't quite right.
+      p = A_pyramid{l}(best_
+      p_prime = A_prime_pyramid{l}(best_i, best_j, :);
+      
+      B_prime_pyramid{l}(i,j,:) = {l}(best_i,best_j,:);
     end
   end
 end
 
 B_prime = B_prime_pyramid{1};
-imshow(
+% imshow(uint8(A_prime_pyramid{1}));
 imshow(uint8(B_prime));
 end
 

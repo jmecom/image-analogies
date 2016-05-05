@@ -14,14 +14,22 @@ NNF = N_BIG * N_BIG * NUM_FEATURES;
 nnf = N_SMALL * N_SMALL * NUM_FEATURES;
 
 % Read images
-A = double(imread('images/newflower-src.jpg'));
-A_prime = double(imread('images/newflower-blur.jpg'));
-B = double(imread('toy-newshore-src.jpg'));
+
+% Blur
+% A = double(imread('images/newflower-src.jpg'));
+% A_prime = double(imread('images/newflower-blur.jpg'));
+% B = double(imread('toy-newshore-src.jpg'));
+
+A = double(imread('images/rose-src.jpg'));
+A_prime = double(imread('images/rose-emboss.jpg'));
+B = double(imread('dandilion-src.jpg'));
 
 % TODO: Remove this -- it's just faster for testing.
-A = imresize(A, 0.1);
-A_prime = imresize(A_prime, 0.1);
-B = imresize(B, 0.1);
+shrink_factor = 0.1;
+A = imresize(A, shrink_factor);
+A_prime = imresize(A_prime, shrink_factor);
+B = imresize(B, shrink_factor);
 
 % Make image analogy
+% imshow(uint8(B));
 B_prime = create_image_analogy(A, A_prime, B);

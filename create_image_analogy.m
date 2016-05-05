@@ -8,6 +8,11 @@ global NNF;
 [B_height, B_width, ~] = size(B);
 [A_height, A_width, ~] = size(A);
 
+%% Create luminance maps
+% A = rgb2ntsc(A);
+% A_prime = rgb2ntsc(A_prime);
+% B = rgb2ntsc(B);
+
 %% Construct Gaussian pyramids for A, A' and B
 A_pyramid = {A};
 A_prime_pyramid = {A_prime};
@@ -15,7 +20,8 @@ B_pyramid = {B};
 B_prime_pyramid = {zeros(size(B))};
 s_pyramid = {zeros(B_height, B_width, 2)};
 
-while (A_height >= 50) && (A_width >= 50)
+% Was 50, 50
+while (A_height >= 15) && (A_width >= 15)
   A_pyramid{end+1} = impyramid(A_pyramid{end}, 'reduce');
   A_prime_pyramid{end+1} = impyramid(A_prime_pyramid{end}, 'reduce');
   B_pyramid{end+1} = impyramid(B_pyramid{end}, 'reduce');
@@ -26,9 +32,6 @@ while (A_height >= 50) && (A_width >= 50)
 end
 
 L = size(A_pyramid, 2);
-
-%% Compute features
-% TODO: Make luminance maps.
 
 %% Make feature vectors used for ANN
 % Extend border for each level to catch edge cases
@@ -89,19 +92,18 @@ fprintf('Finding best match...\n\n');
 
 % TODO: doing single scale for quicker testin right now -- remove this
 % line.
-L=1; 
-
-for l = 1:L
-  fprintf('l: %d\n ======= \n', l);
+L = 1;
+for l = L:-1:1
+  fprintf('\nl: %d/%d\n===========\n', l, L);
   % Loop over B'
   B_prime_l = B_prime_pyramid{l};
   [height, width, ~] = size(B_prime_l);
   for i = 1:height
-    fprintf('i: %d\n', i);
+    fprintf('i: %d/%d\n', i, height);
     for j = 1:width
       % Find the best match
-      [best_i, best_j] = best_match(A_pyramid_extend, ...
-        A_prime_pyramid_extend, B_pyramid_extend, ...
+      [best_i, best_j] = best_match(A_pyramid, A_pyramid_extend, ...
+        A_prime_pyramid_extend, B_pyramid, B_pyramid_extend, ...
         B_prime_pyramid_extend, s_pyramid, A_features, B_features, l, i, j);
       
       % Save it into s
@@ -110,7 +112,12 @@ for l = 1:L
       % Write to B'
       % TODO: This is wrong, as we're just lifting pixels from A' into
       % B... which isn't quite right.
-      B_prime_pyramid{l}(i,j,:) = A_prime_pyramid{l}(best_i,best_j,:);
+            
+%       p = A_pyramid{l}(best_i, best_j, :);
+%       p_prime = A_prime_pyramid{l}(best_i, best_j, :);
+%       transformation = p_prime - p;
+%       B_prime_pyramid{l}(i,j,:) = B_pyramid{l}(i,j,:) + transformation;
+      B_prime_pyramid{l}(i,j,:) = A_prime_pyramid{l}(best_i, best_j, :);
     end
   end
 end

@@ -1,9 +1,10 @@
 function [ result ] = extend_image( image, border )
 %EXTEND_IMAGE Extend the borders of the image by ext_size
+global NUM_FEATURES;
 
 border = floor(border);
 [h, w, ~] = size(image);
-result = zeros(h + 2 * border, w + 2 * border, 3);
+result = zeros(h + 2 * border, w + 2 * border, NUM_FEATURES);
 
 % Put original pic in center
 result(border+1:end-border, border+1:end-border,:) = image(:,:,:); 
