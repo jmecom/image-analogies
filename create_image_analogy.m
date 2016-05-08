@@ -114,19 +114,17 @@ for l = L:-1:1
         B_prime_pyramid_extend, s_pyramid, A_features, B_features, ...
         l, L, i, j);
       
+     
+      if i == 2 
+        disp('best i and j');
+        [best_i, best_j]
+      end
       % Save it into s
 %       s_pyramid{l}(i,j,:) = [best_i best_j];
       s_pyramid{l}(i,j,1) = best_i;
       s_pyramid{l}(i,j,2) = best_j;
       
       % Write to B'
-      % TODO: This is wrong, as we're just lifting pixels from A' into
-      % B... which isn't quite right.
-      
-      %       p = A_pyramid{l}(best_i, best_j, :);
-      %       p_prime = A_prime_pyramid{l}(best_i, best_j, :);
-      %       transformation = p_prime - p;
-      %       B_prime_pyramid{l}(i,j,:) = B_pyramid{l}(i,j,:) + transformation;
       B_prime_pyramid{l}(i, j, 1) = A_prime_pyramid{l}(best_i, best_j, 1);
       B_prime_pyramid{l}(i, j, 2:3) = B_pyramid{l}(i, j, 2:3);
     end

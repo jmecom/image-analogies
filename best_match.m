@@ -16,8 +16,15 @@ synth_i = i - 1;
 synth_j = j - 1;
 
 % NOTE: The indicies returned here are in terms of the extended pyramids ??
+
 [best_app_i, best_app_j] = best_approximate_match(A_features, A_pyramid, ...
 B_pyramid, B_features, l, i, j);
+
+if i < 6 || j < 6
+  best_i = best_app_i;
+  best_j = best_app_j;
+  return
+end
 
 [best_coh_i, best_coh_j] = best_coherence_match(A_pyramid_extend, ...
   A_prime_pyramid_extend, B_pyramid_extend, B_prime_pyramid_extend, ...
@@ -34,10 +41,6 @@ F_q = concat_feature(B_pyramid_extend, B_prime_pyramid_extend, l, ...
 
 d_app = sum((F_p_app(:) - F_q(:)).^2);
 d_coh = sum((F_p_coh(:) - F_q(:)).^2);
-
-% d_app
-% d_coh
-% d_app * (1 + 2^(l - L)*kappa)
 
 if d_coh <= d_app * (1 + 2^(l - L)*kappa)
   best_i = best_coh_i;
