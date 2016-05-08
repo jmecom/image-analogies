@@ -28,7 +28,6 @@ while (A_height >= 15) && (A_width >= 15)
   B_pyramid{end+1} = impyramid(B_pyramid{end}, 'reduce');
   B_prime_pyramid{end+1} = impyramid(B_prime_pyramid{end}, 'reduce');
   s_pyramid{end+1} = impyramid(s_pyramid{end}, 'reduce');
-  
   [A_height, A_width, ~] = size(A_pyramid{end});
 end
 
@@ -40,11 +39,16 @@ A_pyramid_extend = cell(L);
 A_prime_pyramid_extend = cell(L);
 B_pyramid_extend = cell(L);
 B_prime_pyramid_extend = cell(L);
+s_pyramid = cell(L);
+% [B_extend_h, B_extend_w, ~] = size(B_pyramid_extend{1});
+
 for i=1:L
-  A_pyramid_extend{i} = extend_image(A_pyramid{i}, N_BIG/2);
-  A_prime_pyramid_extend{i} = extend_image(A_prime_pyramid{i}, N_BIG/2);
-  B_pyramid_extend{i} = extend_image(B_pyramid{i}, N_BIG/2);
-  B_prime_pyramid_extend{i} = extend_image(B_prime_pyramid{i}, N_BIG/2);
+  A_pyramid_extend{i} = extend_image(A_pyramid{i}, N_BIG/2, NUM_FEATURES);
+  A_prime_pyramid_extend{i} = extend_image(A_prime_pyramid{i}, N_BIG/2, NUM_FEATURES);
+  B_pyramid_extend{i} = extend_image(B_pyramid{i}, N_BIG/2, NUM_FEATURES);
+  B_prime_pyramid_extend{i} = extend_image(B_prime_pyramid{i}, N_BIG/2, NUM_FEATURES);
+%   s_pyramid{i} = extend_image(s_pyramid{i}, N_BIG/2, 2);
+  s_pyramid{i} = zeros(B_height + 4, B_width + 4, 2);
 end
 
 % Concat neightborhood of each pixel at every level
@@ -110,7 +114,9 @@ for l = L:-1:1
         B_prime_pyramid_extend, s_pyramid, A_features, B_features, l, i, j);
       
       % Save it into s
-      s_pyramid{l}(i,j,:) = [best_i best_j];
+%       s_pyramid{l}(i,j,:) = [best_i best_j];
+      s_pyramid{l}(i,j,1) = best_i;
+      s_pyramid{l}(i,j,2) = best_j;
       
       % Write to B'
       % TODO: This is wrong, as we're just lifting pixels from A' into
@@ -120,7 +126,6 @@ for l = L:-1:1
       %       p_prime = A_prime_pyramid{l}(best_i, best_j, :);
       %       transformation = p_prime - p;
       %       B_prime_pyramid{l}(i,j,:) = B_pyramid{l}(i,j,:) + transformation;
-            
       B_prime_pyramid{l}(i, j, 1) = A_prime_pyramid{l}(best_i, best_j, 1);
       B_prime_pyramid{l}(i, j, 2:3) = B_pyramid{l}(i, j, 2:3);
     end

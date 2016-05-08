@@ -37,15 +37,13 @@ x_fine_end_i = min(i+border_big, x_fine_width);
 x_fine_start_j = max(j-border_big, 1);
 x_fine_end_j = min(j+border_big, x_fine_height);
 
-X_fine_nhood(1:x_fine_end_i-x_fine_start_i+1, 1:x_fine_end_j-x_fine_start_j+1)...
-  = X_fine(x_fine_start_i : x_fine_end_i,...
-  x_fine_start_j : x_fine_end_j, NUM_FEATURES);
-X_fine_nhood = X_fine_nhood.* G_big;
-
-X_prime_fine_nhood(1:x_fine_end_i-x_fine_start_i+1, 1:x_fine_end_j-x_fine_start_j+1) ...
-  = X_prime_fine(x_fine_start_i : x_fine_end_i,...
-  x_fine_start_j : x_fine_end_j, NUM_FEATURES);
-X_prime_fine_nhood = X_prime_fine_nhood.* G_big;
+ X_fine_nhood(1:x_fine_end_i-x_fine_start_i+1, 1:x_fine_end_j-x_fine_start_j+1)...
+    = X_fine(x_fine_start_i : x_fine_end_i,...
+    x_fine_start_j : x_fine_end_j, NUM_FEATURES) .* G_big;
+  
+  X_prime_fine_nhood(1:x_fine_end_i-x_fine_start_i+1, 1:x_fine_end_j-x_fine_start_j+1) ...
+    = X_prime_fine(x_fine_start_i : x_fine_end_i,...
+    x_fine_start_j : x_fine_end_j, NUM_FEATURES) .* G_big;
 
 if l-1 > 1
   x_coarse_start_i = max(i-border_small, 1);
@@ -55,14 +53,11 @@ if l-1 > 1
   
   X_coarse_nhood(1:x_coarse_end_i-x_coarse_start_i+1, 1:x_coarse_end_j-x_coarse_start_j+1)...
     = X_coarse(x_coarse_start_i : x_coarse_end_i,...
-    x_coarse_start_j : x_coarse_end_j, NUM_FEATURES);
-  X_coarse_nhood = X_corase_nhood.* G_small;
+    x_coarse_start_j : x_coarse_end_j, NUM_FEATURES) .* G_small;
   
   X_prime_coarse_nhood(1:x_coarse_end_i-x_coarse_start_i+1, 1:x_coarse_end_j-x_coarse_start_j+1) ...
     = X_prime_coarse(x_coarse_start_i : x_coarse_end_i,...
-    x_coarse_start_j : x_coarse_end_j, NUM_FEATURES);
-  X_prime_coarse_nhood = X_prime_corase_nhood.* G_small;
-  
+    x_coarse_start_j : x_coarse_end_j, NUM_FEATURES) .* G_small;
   
   % Normalize
   X_coarse_nhood = X_coarse_nhood .* (sum(X_fine_nhood(:).^2) / sum(X_coarse_nhood(:).^2));
