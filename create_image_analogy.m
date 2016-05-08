@@ -111,7 +111,8 @@ for l = L:-1:1
       % Find the best match
       [best_i, best_j] = best_match(A_pyramid, A_pyramid_extend, ...
         A_prime_pyramid_extend, B_pyramid, B_pyramid_extend, ...
-        B_prime_pyramid_extend, s_pyramid, A_features, B_features, l, i, j);
+        B_prime_pyramid_extend, s_pyramid, A_features, B_features, ...
+        l, L, i, j);
       
       % Save it into s
 %       s_pyramid{l}(i,j,:) = [best_i best_j];

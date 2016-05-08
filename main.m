@@ -5,6 +5,7 @@ global NNF;
 global nnf;
 global A;
 global B;
+global kappa;
 
 % Neightborhood size and num features
 N_BIG = 5;
@@ -12,6 +13,8 @@ N_SMALL = 3;
 NUM_FEATURES = 1;
 NNF = N_BIG * N_BIG * NUM_FEATURES;
 nnf = N_SMALL * N_SMALL * NUM_FEATURES;
+
+kappa = 0.5;
 
 % Read images
 
