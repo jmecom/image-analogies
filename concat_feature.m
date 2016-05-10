@@ -10,6 +10,8 @@ global N_SMALL;
 global NNF;
 global nnf;
 global NUM_FEATURES;
+global G_big;
+global G_small;
 
 border_big = floor(N_BIG/2);
 border_small = floor(N_SMALL/2);
@@ -25,8 +27,7 @@ if l-1 > 1
 end
 
 % Gaussian filters up front
-G_big = fspecial('Gaussian', [N_BIG N_BIG]);
-G_small = fspecial('Gaussian', [N_SMALL N_SMALL]);
+
 X_fine_nhood = zeros(N_BIG);
 X_prime_fine_nhood = zeros(N_BIG);
 
@@ -42,7 +43,6 @@ X_prime_fine_nhood = zeros(N_BIG);
 % % x_fine_start_j = max(j-border_big, 1);
 %  x_fine_end_j = min(j+border_big, x_fine_width);
 
-
 X_fine_nhood(pad_top:pad_bot, pad_left:pad_right)...
   = X_fine(x_fine_start_i : x_fine_end_i,...
   x_fine_start_j : x_fine_end_j, NUM_FEATURES);
@@ -52,9 +52,7 @@ X_prime_fine_nhood(pad_top:pad_bot, pad_left:pad_right) ...
   = X_prime_fine(x_fine_start_i : x_fine_end_i,...
   x_fine_start_j : x_fine_end_j, NUM_FEATURES);
 
-imshow(X_prime_fine_nhood,'InitialMagnification','fit')
 X_prime_fine_nhood = X_prime_fine_nhood.* G_big;
-
 
 if l-1 > 1
 [ x_coarse_start_i, x_coarse_end_i, x_coarse_start_j, x_coarse_end_j, ...
@@ -85,10 +83,10 @@ F = zeros(1, NNF*2 + nnf*2);
 F(1:NNF) = reshape(X_fine_nhood, 1, NNF);
 
 % Only copies over the parts of B' (and A') that are already made
-temp = X_prime_fine_nhood; % <-- transpose this??????
+temp = X_prime_fine_nhood'; % <-- transpose this??????
 temp = reshape(temp, 1, NNF);
 % end_idx = sub2ind([N_BIG N_BIG], border_big, border_big); % dbl check?
-end_idx = sub2ind([N_BIG N_BIG], min(synth_i, 3), min(synth_j, 3));
+end_idx = sub2ind([N_BIG N_BIG], 2, 3);
 temp(end_idx+1:end) = 0;
 
 F(NNF+1:2*NNF) = temp;

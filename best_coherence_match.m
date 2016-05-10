@@ -28,8 +28,6 @@ best_coh_j = -1;
 for ii = i-border_big:i+border_big
   for jj = j-border_big:j+border_big
     
-%     [i j]
-%     [ii jj]
     % Done, (i,j) is the first un-synthesized pixel
     if ii == i && jj == j
       return
@@ -49,8 +47,8 @@ for ii = i-border_big:i+border_big
     dist = sum((F_sr(:) - F_q(:)).^2);
     if dist < min_dist
       min_dist = dist;
-      best_coh_i = max(min(ii, h), 1);
-      best_coh_j = max(min(ii, w), 1);
+      best_coh_i = max(min(ii-2, h-4), 1);  % -2?
+      best_coh_j = max(min(jj-2, w-4), 1);
     end
     
   end

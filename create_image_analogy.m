@@ -114,19 +114,22 @@ for l = L:-1:1
         B_prime_pyramid_extend, s_pyramid, A_features, B_features, ...
         l, L, i, j);
       
-     
-      if i == 4 && j == 8
-        disp('best i and j');
-        [best_i, best_j]
-      end
       % Save it into s
-%       s_pyramid{l}(i,j,:) = [best_i best_j];
       s_pyramid{l}(i+2,j+2,1) = best_i;
       s_pyramid{l}(i+2,j+2,2) = best_j;
       
       % Write to B'
+%       [height width]
+%       [i j]
+%       [best_i best_j]
+%       size(A_prime_pyramid{l})
+%       A_prime_pyramid{l}(best_i, best_j, 1);
       B_prime_pyramid{l}(i, j, 1) = A_prime_pyramid{l}(best_i, best_j, 1);
       B_prime_pyramid{l}(i, j, 2:3) = B_pyramid{l}(i, j, 2:3);
+      
+      B_prime_pyramid_extend{l}(i+2, j+2, 1) = A_prime_pyramid{l}(best_i, best_j, 1);
+      B_prime_pyramid_extend{l}(i+2, j+2, 2:3) = B_pyramid{l}(i, j, 2:3);
+    
     end
   end
 end

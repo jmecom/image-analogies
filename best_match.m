@@ -12,7 +12,7 @@ global kappa;
 i = i + floor(N_BIG/2);
 j = j + floor(N_BIG/2);
 
-synth_i = i - 1;
+synth_i = i;
 synth_j = j - 1;
 
 % NOTE: The indicies returned here are in terms of the extended pyramids ??
@@ -43,8 +43,8 @@ d_app = sum((F_p_app(:) - F_q(:)).^2);
 d_coh = sum((F_p_coh(:) - F_q(:)).^2);
 
 if d_coh <= d_app * (1 + 2^(l - L)*kappa)
-  best_i = best_coh_i;
-  best_j = best_coh_j;
+  best_i = best_coh_i - 2;
+  best_j = best_coh_j - 2;
 else
   best_i = best_app_i;
   best_j = best_app_j;
