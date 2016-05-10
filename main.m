@@ -67,8 +67,8 @@ B = imread('toy-newshore-src.jpg');
 % B = imread('dandilion-src.jpg');
 
 % TODO: Remove this -- it's just faster for testing.
-A_scale = 0.1;
-B_scale = 0.1;
+A_scale = 0.6;
+B_scale = 0.6;
 A = imresize(A, A_scale);
 A_prime = imresize(A_prime, A_scale);
 B = imresize(B, B_scale);

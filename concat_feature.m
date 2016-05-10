@@ -46,24 +46,31 @@ X_prime_fine_nhood(pad_top:pad_bot, pad_left:pad_right) ...
 X_prime_fine_nhood = X_prime_fine_nhood.* G_big;
 
 if l+1 <= L
-[ x_coarse_start_i, x_coarse_end_i, x_coarse_start_j, x_coarse_end_j, ...
-  pad_top, pad_bot, pad_left, pad_right] = ...
-  get_indices( floor(i/2), floor(j/2), N_SMALL, x_coarse_height, x_coarse_width );
+  [ x_coarse_start_i, x_coarse_end_i, x_coarse_start_j, x_coarse_end_j, ...
+    pad_top, pad_bot, pad_left, pad_right, flag] = ...
+    get_indices( floor(i/2), floor(j/2), N_SMALL, x_coarse_height, x_coarse_width );
   
-  X_coarse_nhood(pad_top:pad_bot, pad_left:pad_right)...
-    = X_coarse(x_coarse_start_i : x_coarse_end_i,...
-    x_coarse_start_j : x_coarse_end_j, NUM_FEATURES);
+  if flag == false
+    size(X_coarse_nhood(pad_top:pad_bot, pad_left:pad_right))
+    size(X_coarse(x_coarse_start_i : x_coarse_end_i,...
+      x_coarse_start_j : x_coarse_end_j, NUM_FEATURES))
+    
+    X_coarse_nhood(pad_top:pad_bot, pad_left:pad_right)...
+      = X_coarse(x_coarse_start_i : x_coarse_end_i,...
+      x_coarse_start_j : x_coarse_end_j, NUM_FEATURES);
+    
+    X_coarse_nhood = X_coarse_nhood.* G_small;
+    
+    X_prime_coarse_nhood(pad_top:pad_bot, pad_left:pad_right) ...
+      = X_prime_coarse(x_coarse_start_i : x_coarse_end_i,...
+      x_coarse_start_j : x_coarse_end_j, NUM_FEATURES);
+    X_prime_coarse_nhood = X_prime_coarse_nhood.* G_small;
+    
+    % Normalize
+    X_coarse_nhood = X_coarse_nhood .* (sum(X_fine_nhood(:).^2) / sum(X_coarse_nhood(:).^2));
+    X_prime_coarse_nhood = X_prime_coarse_nhood .* (sum(X_prime_fine_nhood(:).^2) / sum(X_prime_coarse_nhood(:).^2));
+  end
   
-  X_coarse_nhood = X_coarse_nhood.* G_small;
-  
-  X_prime_coarse_nhood(pad_top:pad_bot, pad_left:pad_right) ...
-    = X_prime_coarse(x_coarse_start_i : x_coarse_end_i,...
-    x_coarse_start_j : x_coarse_end_j, NUM_FEATURES);
-  X_prime_coarse_nhood = X_prime_coarse_nhood.* G_small;
-
-  % Normalize
-  X_coarse_nhood = X_coarse_nhood .* (sum(X_fine_nhood(:).^2) / sum(X_coarse_nhood(:).^2));
-  X_prime_coarse_nhood = X_prime_coarse_nhood .* (sum(X_prime_fine_nhood(:).^2) / sum(X_prime_coarse_nhood(:).^2));
 end
 
 F = zeros(1, NNF*2 + nnf*2);

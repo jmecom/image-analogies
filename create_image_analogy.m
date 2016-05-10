@@ -88,7 +88,7 @@ fprintf('Finding best match...\n\n');
 
 % TODO: doing single scale for quicker testin right now -- remove this
 % line.
-% L = 1;
+L = 1;
 for l = L:-1:1
   fprintf('\nl: %d/%d\n===========\n', l, L);
   % Loop over B'
