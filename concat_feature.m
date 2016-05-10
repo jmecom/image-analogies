@@ -13,36 +13,32 @@ global G_big;
 global G_small;
 global end_idx;
 
-
 X_fine = X_pyramid{l};
 X_prime_fine = X_prime_pyramid{l};
 [x_fine_height, x_fine_width, ~] = size(X_fine);
 
-if l+1 <= L
+if l+1 <= L % In range, so make a coarse guy
   X_coarse = X_pyramid{l+1};
   X_prime_coarse = X_prime_pyramid{l+1};
   [x_coarse_height, x_coarse_width, ~] = size(X_coarse);
 end
 
-% Gaussian filters up front
-
 X_fine_nhood = zeros(N_BIG);
 X_prime_fine_nhood = zeros(N_BIG);
 X_coarse_nhood = zeros(N_SMALL);
 X_prime_coarse_nhood = zeros(N_SMALL);
-%starting and ending indices
 
-% [i j]
 [ x_fine_start_i, x_fine_end_i, x_fine_start_j, x_fine_end_j, ...
-  pad_top, pad_bot, pad_left, pad_right] = ...
+  pad_top, pad_bot, pad_left, pad_right ] = ...
   get_indices( i, j, N_BIG, x_fine_height, x_fine_width );
 
-
+% A or B
 X_fine_nhood(pad_top:pad_bot, pad_left:pad_right)...
   = X_fine(x_fine_start_i : x_fine_end_i,...
   x_fine_start_j : x_fine_end_j, NUM_FEATURES);
-X_fine_nhood = X_fine_nhood.* G_big;
+X_fine_nhood = X_fine_nhood.* G_big; % Gaussian kernel
 
+% A' or B'
 X_prime_fine_nhood(pad_top:pad_bot, pad_left:pad_right) ...
   = X_prime_fine(x_fine_start_i : x_fine_end_i,...
   x_fine_start_j : x_fine_end_j, NUM_FEATURES);

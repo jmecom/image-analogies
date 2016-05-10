@@ -88,7 +88,7 @@ fprintf('Finding best match...\n\n');
 
 % TODO: doing single scale for quicker testin right now -- remove this
 % line.
-L = 1;
+% L = 1;
 for l = L:-1:1
   fprintf('\nl: %d/%d\n===========\n', l, L);
   % Loop over B'
@@ -98,24 +98,26 @@ for l = L:-1:1
     fprintf('i: %d/%d\n', i, height);
     for j = 1:width
       % Find the best match
-      [best_i, best_j] = best_match(A_pyramid, A_prime_pyramid, B_pyramid, B_prime_pyramid,...
-         s_pyramid, A_features, B_features, l, L, i, j);
+      [best_i, best_j, type] = best_match(A_pyramid, A_prime_pyramid, B_pyramid, B_prime_pyramid,...
+        s_pyramid, A_features, B_features, l, L, i, j);
       
       % Save it into s
       s_pyramid{l}(i,j,1) = best_i;
       s_pyramid{l}(i,j,2) = best_j;
       
       % Write to B'
-%       [height width]
-%       [i j]
-%       [best_i best_j]
-%       size(A_prime_pyramid{l})
-%       A_prime_pyramid{l}(best_i, best_j, 1);
+      %       [height width]
+      %       [i j]
+      %       [best_i best_j]
+      %       size(A_prime_pyramid{l})
+      A_prime_pyramid{l}(best_i, best_j, 1);
+      %       if strcmp(type, 'app')
       B_prime_pyramid{l}(i, j, 1) = A_prime_pyramid{l}(best_i, best_j, 1);
-      B_prime_pyramid{l}(i, j, 2:3) = B_pyramid{l}(i, j, 2:3);
+      %       else
+      %         B_prime_pyramid{l}(i, j, 1) = B_prime_pyramid{l}(best_i, best_j, 1);
+      %       end
       
-    
-    
+      B_prime_pyramid{l}(i, j, 2:3) = B_pyramid{l}(i, j, 2:3);
     end
   end
 end
