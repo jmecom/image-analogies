@@ -39,7 +39,7 @@ B = imread('toy-newshore-src.jpg');
 % B = imread('dandilion-src.jpg');
 
 % TODO: Remove this -- it's just faster for testing.
-shrink_factor = 0.2;
+shrink_factor = 0.1;
 A = imresize(A, shrink_factor);
 A_prime = imresize(A_prime, shrink_factor);
 B = imresize(B, shrink_factor);

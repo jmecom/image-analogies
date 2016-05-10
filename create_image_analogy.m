@@ -115,14 +115,14 @@ for l = L:-1:1
         l, L, i, j);
       
      
-      if i == 2 
+      if i == 4 && j == 8
         disp('best i and j');
         [best_i, best_j]
       end
       % Save it into s
 %       s_pyramid{l}(i,j,:) = [best_i best_j];
-      s_pyramid{l}(i,j,1) = best_i;
-      s_pyramid{l}(i,j,2) = best_j;
+      s_pyramid{l}(i+2,j+2,1) = best_i;
+      s_pyramid{l}(i+2,j+2,2) = best_j;
       
       % Write to B'
       B_prime_pyramid{l}(i, j, 1) = A_prime_pyramid{l}(best_i, best_j, 1);

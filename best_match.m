@@ -20,7 +20,7 @@ synth_j = j - 1;
 [best_app_i, best_app_j] = best_approximate_match(A_features, A_pyramid, ...
 B_pyramid, B_features, l, i, j);
 
-if i < 6 || j < 6
+if i <= 6 || j <= 6
   best_i = best_app_i;
   best_j = best_app_j;
   return
