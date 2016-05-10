@@ -8,6 +8,7 @@ global B;
 global kappa;
 global G_big;
 global G_small;
+global end_idx;
 
 % Neightborhood size and num features
 N_BIG = 5;
@@ -15,10 +16,13 @@ N_SMALL = 3;
 NUM_FEATURES = 1;
 NNF = N_BIG * N_BIG * NUM_FEATURES;
 nnf = N_SMALL * N_SMALL * NUM_FEATURES;
+end_idx = 12;
+kappa = 1;
 
-kappa = 0.5;
+G_big = fspecial('Gaussian', [N_BIG N_BIG], 1);
 
-G_big = fspecial('Gaussian', [N_BIG N_BIG]);
+%G_big = (G_big + ones(5))/2;
+
 G_small = fspecial('Gaussian', [N_SMALL N_SMALL]);
 
 % Read images

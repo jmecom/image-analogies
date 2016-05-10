@@ -33,29 +33,24 @@ end
 
 L = size(A_pyramid, 2);
 
-% Extended pyramids, for ANN only
-A_pyramid_extend = cell(L);
-B_pyramid_extend = cell(L);
+%% Make feature vectors used for ANN
+% Extend border for each level to catch edge cases
 
 s_pyramid = cell(L);
 % [B_extend_h, B_extend_w, ~] = size(B_pyramid_extend{1});
 
-for l=1:L
-  A_pyramid_extend{l} = extend_image(A_pyramid{l}, N_BIG/2, NUM_FEATURES);
-  B_pyramid_extend{l} = extend_image(B_pyramid{l}, N_BIG/2, NUM_FEATURES);
-  s_pyramid{l} = zeros(B_height + 4, B_width + 4, 2);
-end
+for i=1:L
 
-%% Make feature vectors used for ANN
-% Extend border for each level to catch edge cases
+%   s_pyramid{i} = extend_image(s_pyramid{i}, N_BIG/2, 2);
+  s_pyramid{i} = zeros(B_height + 4, B_width + 4, 2);
+end
 
 % Concat neightborhood of each pixel at every level
 A_features = cell(L);
 B_features = cell(L);
 
 for l = 1:L
-  A_l = A_pyramid_extend{l};
-  B_l = B_pyramid_extend{l};
+
   
   [A_height, A_width, ~] = size(A_pyramid{l});
   [B_height, B_width, ~] = size(B_pyramid{l});
@@ -67,14 +62,14 @@ for l = 1:L
     for j = 1:A_width
       % Get the neighborhood around (i,j), reshape it, and place it
       % into A features.
-      A_features{l}(sub2ind([A_height A_width], i, j), :) = ...
+      A_features{l}(sub2ind([A_height A_width], j, i), :) = ...
         reshape(A_l(i:i+N_BIG-1, j:j+N_BIG-1, NUM_FEATURES), 1, NNF);
     end
   end
   
   for i = 1:B_height
     for j = 1:B_width
-      B_features{l}(sub2ind([B_height B_width], i, j), :) = ...
+      B_features{l}(sub2ind([B_height B_width], j, i), :) = ...
         reshape(B_l(i:i+N_BIG-1, j:j+N_BIG-1, NUM_FEATURES), 1, NNF);
     end
   end
@@ -98,12 +93,14 @@ for l = L:-1:1
     fprintf('i: %d/%d\n', i, height);
     for j = 1:width
       % Find the best match
-      [best_i, best_j] = best_match(A_pyramid, A_prime_pyramid, B_pyramid, B_prime_pyramid,...
-         s_pyramid, A_features, B_features, l, L, i, j);
+      [best_i, best_j] = best_match(A_pyramid, A_pyramid_extend, ...
+        A_prime_pyramid_extend, B_pyramid, B_pyramid_extend, ...
+        B_prime_pyramid_extend, s_pyramid, A_features, B_features, ...
+        l, L, i, j);
       
       % Save it into s
-      s_pyramid{l}(i,j,1) = best_i;
-      s_pyramid{l}(i,j,2) = best_j;
+      s_pyramid{l}(i+2,j+2,1) = best_i;
+      s_pyramid{l}(i+2,j+2,2) = best_j;
       
       % Write to B'
 %       [height width]
@@ -114,7 +111,8 @@ for l = L:-1:1
       B_prime_pyramid{l}(i, j, 1) = A_prime_pyramid{l}(best_i, best_j, 1);
       B_prime_pyramid{l}(i, j, 2:3) = B_pyramid{l}(i, j, 2:3);
       
-    
+      B_prime_pyramid_extend{l}(i+2, j+2, 1) = A_prime_pyramid{l}(best_i, best_j, 1);
+      B_prime_pyramid_extend{l}(i+2, j+2, 2:3) = B_pyramid{l}(i, j, 2:3);
     
     end
   end

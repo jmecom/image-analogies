@@ -4,9 +4,6 @@ function [best_app_i, best_app_j] = best_approximate_match(A_features, ...
 
 global N_BIG;
 
-% Convert (i,j) back...
-i = i - floor(N_BIG/2);
-j = j - floor(N_BIG/2);
 
 % Transpose since our ANN library wants d*N but it's N*d right now.
 A_features{l} = A_features{l}';

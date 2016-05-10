@@ -1,5 +1,4 @@
-function [ F ] = concat_feature(X_pyramid, X_prime_pyramid, l, i, j, ...
-  synth_i, synth_j)
+function [ F ] = concat_feature(X_pyramid, X_prime_pyramid, l, i, j, L)
 %CONCAT_FEATURE Concatenate the neighborhood around (i,j)
 %               on levels l and l-1 for X and X'
 %               Use a neighborhood size of 5 for level l, and
@@ -12,17 +11,16 @@ global nnf;
 global NUM_FEATURES;
 global G_big;
 global G_small;
+global end_idx;
 
-border_big = floor(N_BIG/2);
-border_small = floor(N_SMALL/2);
 
 X_fine = X_pyramid{l};
 X_prime_fine = X_prime_pyramid{l};
 [x_fine_height, x_fine_width, ~] = size(X_fine);
 
-if l-1 > 1
-  X_coarse = X_pyramid{l-1};
-  X_prime_coarse = X_prime_pyramid{l-1};
+if l+1 <= L
+  X_coarse = X_pyramid{l+1};
+  X_prime_coarse = X_prime_pyramid{l+1};
   [x_coarse_height, x_coarse_width, ~] = size(X_coarse);
 end
 
@@ -30,7 +28,8 @@ end
 
 X_fine_nhood = zeros(N_BIG);
 X_prime_fine_nhood = zeros(N_BIG);
-
+X_coarse_nhood = zeros(N_SMALL);
+X_prime_coarse_nhood = zeros(N_SMALL);
 %starting and ending indices
 
 % [i j]
@@ -38,10 +37,6 @@ X_prime_fine_nhood = zeros(N_BIG);
   pad_top, pad_bot, pad_left, pad_right] = ...
   get_indices( i, j, N_BIG, x_fine_height, x_fine_width );
 
-% % x_fine_start_i = max(i-border_big, 1);
-%  x_fine_end_i = min(i+border_big, x_fine_height);
-% % x_fine_start_j = max(j-border_big, 1);
-%  x_fine_end_j = min(j+border_big, x_fine_width);
 
 X_fine_nhood(pad_top:pad_bot, pad_left:pad_right)...
   = X_fine(x_fine_start_i : x_fine_end_i,...
@@ -54,14 +49,15 @@ X_prime_fine_nhood(pad_top:pad_bot, pad_left:pad_right) ...
 
 X_prime_fine_nhood = X_prime_fine_nhood.* G_big;
 
-if l-1 > 1
+if l+1 <= L
 [ x_coarse_start_i, x_coarse_end_i, x_coarse_start_j, x_coarse_end_j, ...
   pad_top, pad_bot, pad_left, pad_right] = ...
-  get_indices( i, j, N_BIG, x_coarse_height, x_coarse_width );
+  get_indices( floor(i/2), floor(j/2), N_SMALL, x_coarse_height, x_coarse_width );
   
   X_coarse_nhood(pad_top:pad_bot, pad_left:pad_right)...
     = X_coarse(x_coarse_start_i : x_coarse_end_i,...
     x_coarse_start_j : x_coarse_end_j, NUM_FEATURES);
+  
   X_coarse_nhood = X_coarse_nhood.* G_small;
   
   X_prime_coarse_nhood(pad_top:pad_bot, pad_left:pad_right) ...
@@ -85,14 +81,13 @@ F(1:NNF) = reshape(X_fine_nhood, 1, NNF);
 % Only copies over the parts of B' (and A') that are already made
 temp = X_prime_fine_nhood'; % <-- transpose this??????
 temp = reshape(temp, 1, NNF);
-% end_idx = sub2ind([N_BIG N_BIG], border_big, border_big); % dbl check?
-end_idx = sub2ind([N_BIG N_BIG], 2, 3);
 temp(end_idx+1:end) = 0;
-
+% otherTemp = reshape(temp, 5, 5);
+% imshow(otherTemp', 'InitialMagnification', 'fit');
 F(NNF+1:2*NNF) = temp;
 
 % Edge case: make sure the l-1 level exists
-if l-1 > 1
+if l+1 <= L
   F(2*NNF+1:2*NNF+nnf) = reshape(X_coarse_nhood, 1, nnf);
   F(2*NNF+nnf+1:end) = reshape(X_prime_coarse_nhood, 1, nnf);
 end

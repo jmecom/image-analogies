@@ -1,4 +1,4 @@
-function [ best_coh_i, best_coh_j ] = best_coherence_match( A_pyramid, A_prime_pyramid, ...
+function [ best_coh_i, best_coh_j ] = best_coherence_match( A_pyramid, A_prime_pyramind, ...
         B_pyramid, B_prime_pyramid, s_pyramid, l, L, i, j)
 %BEST_COHERENCE_MATCH
 
@@ -16,22 +16,21 @@ border_big = floor(N_BIG/2);
 % [i j]
 
 F_q = concat_feature(B_pyramid, B_prime_pyramid, ...
-  l, i, j, L);
+  l, i, j);
 
 min_dist = inf;
 best_coh_i = -1;
 best_coh_j = -1;
 
-
-%loop over image
-for ii = i-border_big:i+border_big
-  for jj = j-border_big:j+border_big
+% Loop over extend image
+for ii = max(i-border_big, 1):min(i+border_big, h)
+  for jj = max(j-border_big, 1):min(j+border_big, w)
     
     % Done, (i,j) is the first un-synthesized pixel
     if ii == i && jj == j
       return
     end
- 
+    
 %     [s_i, s_j] = s_pyramid{l}(ii,jj,:);
 %     size(s_pyramid{l})
     s_i = s_pyramid{l}(ii,jj,1);
@@ -40,11 +39,10 @@ for ii = i-border_big:i+border_big
     F_sr_i = s_i + (i - ii); % this is a problem for when s is not yet
     F_sr_j = s_j + (j - jj); % set, we solve this by just doing
                              % approx match only for first 3 rows.
-    F_sr = concat_feature(A_pyramid, A_prime_pyramid, l, ...
-      F_sr_i, F_sr_j, L);
-
+    F_sr = concat_feature(A_pyramid, A_prime_pyramid_extend, l, ...
+      F_sr_i, F_sr_j);
+    
     dist = sum((F_sr(:) - F_q(:)).^2);
-
     if dist < min_dist
       min_dist = dist;
       best_coh_i = ii;  % -2?

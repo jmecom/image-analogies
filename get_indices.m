@@ -1,5 +1,5 @@
 function [ start_i, end_i, start_j, end_j, ...
-  pad_top, pad_bot, pad_left, pad_right] = get_indices( i, j, N, h, w )
+  pad_top, pad_bot, pad_left, pad_right] = get_indices( i, j, N, h, w)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
