@@ -65,6 +65,8 @@ if l+1 <= L
     %     imshow(X_prime_coarse_nhood, 'InitialMagnification', 'fit');
     
     % Normalize
+%     X_coarse_nhood = X_coarse_nhood * (1/2);
+%     X_prime_coarse_nhood = X_prime_coarse_nhood * (1/2);
     %     X_coarse_nhood = X_coarse_nhood .* (sum(X_fine_nhood(:).^2) / sum(X_coarse_nhood(:).^2));
     %     X_prime_coarse_nhood = X_prime_coarse_nhood .* (sum(X_prime_fine_nhood(:).^2) / sum(X_prime_coarse_nhood(:).^2));
     

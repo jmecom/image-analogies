@@ -22,7 +22,7 @@ B_prime_pyramid = {zeros(size(B))};
 s_pyramid = {zeros(B_height, B_width, 2)};
 
 % Was 50, 50
-while (A_height >= 15) && (A_width >= 15)
+while (A_height >= 50) && (A_width >= 50)
   A_pyramid{end+1} = impyramid(A_pyramid{end}, 'reduce');
   A_prime_pyramid{end+1} = impyramid(A_prime_pyramid{end}, 'reduce');
   B_pyramid{end+1} = impyramid(B_pyramid{end}, 'reduce');

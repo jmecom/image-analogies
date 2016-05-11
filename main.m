@@ -20,7 +20,7 @@ nnf = N_SMALL * N_SMALL * NUM_FEATURES;
 end_idx = sub2ind([N_BIG N_BIG], 2, 3);
 % end_idx = sub2ind([N_BIG N_BIG], 2, 2);
 
-kappa = 10;
+kappa = 3;
 
 G_big = fspecial('Gaussian', [N_BIG N_BIG]);
 
@@ -46,10 +46,14 @@ G_small = fspecial('Gaussian', [N_SMALL N_SMALL]);
 % A_prime = imread('images/rhone.jpg');
 % B = imread('jakarta.jpg');
 
+A = imread('images/swan.jpg');
+A_prime = imread('images/swan-pastel.jpg');
+B = imread('chicago.jpg');
+
 % Blur
-A = imread('images/newflower-src.jpg');
-A_prime = imread('images/newflower-blur.jpg');
-B = imread('toy-newshore-src.jpg');
+% A = imread('images/newflower-src.jpg');
+% A_prime = imread('images/newflower-blur.jpg');
+% B = imread('toy-newshore-src.jpg');
 
 % Blur2
 % A = imread('images/blurA1.jpg');
@@ -67,8 +71,8 @@ B = imread('toy-newshore-src.jpg');
 % B = imread('dandilion-src.jpg');
 
 % TODO: Remove this -- it's just faster for testing.
-A_scale = 0.6;
-B_scale = 0.6;
+A_scale = 0.5;
+B_scale = 0.5;
 A = imresize(A, A_scale);
 A_prime = imresize(A_prime, A_scale);
 B = imresize(B, B_scale);
