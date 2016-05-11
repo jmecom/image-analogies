@@ -1,9 +1,7 @@
-function [ best_i, best_j, type ] = best_match( A_pyramid, A_prime_pyramid, B_pyramid, B_prime_pyramid,...
+function [ best_i, best_j ] = best_match( A_pyramid, A_prime_pyramid, B_pyramid, B_prime_pyramid,...
   s_pyramid, A_features, B_features, l, L, i, j)
 %BEST_MATCH ...
-%           The pixel (i,j) passed in is in terms of NON-EXTENDED pyramid
 
-global N_BIG;
 global kappa;
 
 [best_app_i, best_app_j] = best_approximate_match(A_features, A_pyramid, ...
@@ -13,7 +11,6 @@ global kappa;
 if i <= 4 || j <= 4 || i >= h-4 || j >=w-4
   best_i = best_app_i;
   best_j = best_app_j;
-  type = 'app';
   return
 end
 
@@ -23,7 +20,6 @@ end
 if best_coh_i == -1 || best_coh_j == -1
   best_i = best_app_i;
   best_j = best_app_j;
-  type = 'app';
   return
 end
 
@@ -40,11 +36,9 @@ d_coh = sum((F_p_coh(:) - F_q(:)).^2);
 if d_coh <= d_app * (1 + 2^(l - L)*kappa)
   best_i = best_coh_i;
   best_j = best_coh_j;
-  type = 'coh';
 else
   best_i = best_app_i;
   best_j = best_app_j;
-  type = 'app';
 end
 
 end

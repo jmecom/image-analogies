@@ -20,7 +20,7 @@ nnf = N_SMALL * N_SMALL * NUM_FEATURES;
 end_idx = sub2ind([N_BIG N_BIG], 2, 3);
 % end_idx = sub2ind([N_BIG N_BIG], 2, 2);
 
-kappa = 0;
+kappa = 10;
 
 G_big = fspecial('Gaussian', [N_BIG N_BIG]);
 
