@@ -1,5 +1,7 @@
 # image-analogies
 
+![](http://jmecom.github.io/images/image-analogies/header.PNG)
+
 #### [Full writeup here.](http://jmecom.github.io/projects/computational-photography/image-analogies/)
 
 This repository contains a MATLAB implementation of Image Analogies by Hertzmann, et al. 
