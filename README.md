@@ -4,6 +4,8 @@
 
 #### [Full writeup here.](http://jmecom.github.io/projects/computational-photography/image-analogies/)
 
+Developed by [Jordan Mecom](http://jmecom.github.io), [Alice Wang](http://github.com/ahris), and [Will Hardy](http://willaredt.tumblr.com/).
+
 This repository contains a MATLAB implementation of Image Analogies by Hertzmann, et al. 
 The paper's website (which includes more results) can be viewed [here](http://mrl.nyu.edu/projects/image-analogies/).
 
